@@ -1,6 +1,7 @@
 package com.spring.springsecuritydemo.rest;
 
 import com.spring.springsecuritydemo.model.Developer;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,11 +19,13 @@ public class DeveloperRestControllerV1 {
     ).collect(Collectors.toList());
 
     @GetMapping(value = "/developers")
+    @PreAuthorize(value = "hasAuthority('developers:read')")
     public List<Developer> getAll() {
         return DEVELOPERS;
     }
 
     @GetMapping(value = "/developer/{developerId}")
+    @PreAuthorize(value = "hasAuthority('developers:write')")
     public Developer getById(@PathVariable(value = "developerId") Long id) {
         return DEVELOPERS.stream()
                 .filter(developer -> developer.getId().equals(id))
@@ -31,6 +34,7 @@ public class DeveloperRestControllerV1 {
     }
 
     @PostMapping(value = "/new_developer")
+    @PreAuthorize(value = "hasAuthority('developers:write')")
     public Developer create(Developer developer) {
         this.DEVELOPERS.add(developer);
         return developer;
